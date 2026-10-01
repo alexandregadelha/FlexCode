@@ -1,133 +1,176 @@
-<h1 align="center">MiMoCode</h1>
+<h1 align="center">FlexCode</h1>
 
 <p align="center">
-  <img src="assets/readme/mimocode-banner.png" alt="MiMoCode" width="700">
+  <img src="assets/readme/mimocode-banner.png" alt="FlexCode" width="700">
 </p>
 
-<p align="center"><strong>MiMo Code: Where Models and Agents Co-Evolve</strong></p>
+<p align="center"><strong>FlexCode — Flexibilidade para seus projetos</strong></p>
 
 <p align="center">
-  <a href="README.zh.md">中文</a> | English
+  <a href="README.en.md">English</a> | Português
 </p>
 
 <p align="center">
-  <a href="https://mimo.xiaomi.com/coder">Website</a> | <a href="https://mimo.xiaomi.com/en/blog/mimo-code-long-horizon">Blog</a>
+  <a href="https://github.com/alexandregadelha/FlexCode">GitHub</a> |
+  Fork do <a href="https://github.com/XiaomiMiMo/MiMo-Code">MiMoCode</a>
 </p>
 
 ---
 
-MiMoCode is a terminal-native AI coding assistant. It can read and write code, run commands, manage Git, and use a persistent memory system to keep a deep understanding of your project across sessions while continuously improving itself.
+O **FlexCode** é um fork do [MiMoCode](https://github.com/XiaomiMiMo/MiMo-Code) — um
+assistente de código nativo de terminal que lê e escreve código, executa comandos,
+gerencia Git e mantém memória persistente entre sessões.
 
-MiMo Auto is built in as a free-for-limited-time channel, so you can start with zero configuration. MiMoCode also supports connecting to any mainstream LLM provider API.
+Por cima da base do MiMoCode, o FlexCode adiciona a sua característica principal:
+**o navegador integrado**, a mesma arquitetura de navegação que o
+[Hermes Agent](https://github.com/NousResearch) utiliza — para que o assistente
+navegue na web, inspecione páginas e interaja com interfaces no mesmo fluxo de
+trabalho em que você programa.
+
+---
+
+## Navegador Integrado
+
+O FlexCode dá ao agente a capacidade de controlar um navegador real, seguindo o
+mesmo design de ferramentas de browser do Hermes Agent:
+
+- **Navegação** — abrir URLs, voltar/avançar, recarregar e gerenciar abas.
+- **Snapshot** — a página é lida como uma árvore de acessibilidade com refs
+  estáveis, e o agente identifica onde clicar, digitar ou selecionar.
+- **Interação** — clicks, digitação em campos, preenchimento de formulários,
+  rolagem, drag, upload de arquivos e execução de JavaScript quando necessário.
+- **Capturas** — screenshots (JPG/PNG) e export de páginas em Markdown.
+- **Modos** — navegador local via CDP ou providers em nuvem plugáveis
+  (Browserbase, Browser Use, …), com fallback e supervisão de sessões.
+
+Isso permite fluxos como "abra esta issue no navegador, leia o console, reproduza
+o bug na UI e suba o fix" sem sair do terminal.
+
+> A integração de navegador é a feature distintiva do FlexCode. A base
+> (agentes, memória, compose) permanece a do MiMoCode.
 
 ---
 
 ## Quick Start
 
 ```bash
-# One-line install
-curl -fsSL https://mimo.xiaomi.com/install | bash
+# Instalar dependências
+bun install
 
-# Or install via npm
-npm install -g @mimo-ai/cli
+# Rodar em modo desenvolvimento
+bun run dev
 
-# Run
+# Ou rodar o bin direto
 mimo
 ```
 
-The first launch guides you through configuration automatically. Supported options:
-- **MiMo Auto (free for a limited time)** — anonymous channel, zero configuration
-- **Xiaomi MiMo Platform** — OAuth login
-- **Import from Claude Code** — migrate existing authentication in one step
-- **Custom Provider** — add any OpenAI-compatible API in the TUI
+No primeiro uso, o fluxo de configuração é guiado automaticamente. As opções
+disponíveis de provedor incluem:
+
+- **MiMo Auto (gratuito por tempo limitado)** — canal anônimo, zero configuração
+- **Plataforma MiMo da Xiaomi** — login OAuth
+- **Importar do Claude Code** — migra sua autenticação em um passo
+- **Provedor custom** — adicione qualquer API compatível com OpenAI no TUI
+
+> Como o FlexCode é um fork, você também pode usar os binários do MiMoCode
+> originais como ponto de partida e aplicar o módulo de navegador por cima.
 
 <details>
-<summary><strong>WSL: clipboard issues</strong></summary>
+<summary><strong>WSL: problemas de clipboard</strong></summary>
 
-If you encounter garbled text when copying on WSL, install `xsel`:
+Se o texto sair corrompido ao copiar no WSL, instale o <code>xsel</code>:
 ```bash
 sudo apt install xsel
 ```
 </details>
 
 <details>
-<summary><strong>Windows: garbled CJK (Chinese/Japanese/Korean) output in the shell</strong></summary>
+<summary><strong>Windows: saída CJK (chinês/japonês/coreano) corrompida no shell</strong></summary>
 
-On Windows with a non-UTF-8 system locale (e.g. zh-CN, whose active code page is 936/GBK),
-command output containing CJK characters may appear garbled (mojibake). MiMoCode forces
-UTF-8 output for spawned PowerShell/cmd subprocesses. If you still encounter garbled output
-in cases this does not yet cover, enable Windows' system-wide UTF-8 support:
+No Windows com locale de sistema não-UTF-8 (ex.: zh-CN, code page 936/GBK), a
+saída de comandos com caracteres CJK pode sair em mojibake. O FlexCode força
+saída UTF-8 para os subprocessos PowerShell/cmd que ele lança. Se ainda assim
+houver saída corrompida em casos não cobertos, ative o suporte UTF-8 de sistema
+do Windows:
 
-**Settings → Time & language → Language & region → Administrative language settings →
-Change system locale → check "Beta: Use Unicode UTF-8 for worldwide language support" →
-reboot.**
+**Configurações → Hora e idioma → Idioma e região → Configurações administrativas
+de idioma → Alterar locale do sistema → marque "Beta: Use Unicode UTF-8 for
+worldwide language support" → reinicie.**
 
-This switches the active code page (ACP) to UTF-8 (65001) for all programs, so subprocesses
-no longer inherit the legacy code page. Note it is a system-wide Beta toggle and may cause
-some older non-Unicode programs to display incorrectly, so treat it as a workaround.
+Isso troca a code page ativa (ACP) para UTF-8 (65001) em todos os programas,
+para que subprocessos não herdem mais a code page legada. É um toggle Beta de
+sistema e pode fazer programas antigos não-Unicode exibirem incorretamente —
+trate como workaround.
 </details>
-
----
-
-## MiMo Ecosystem
-
-Beyond MiMoCode, Xiaomi MiMo models also work in other agents and coding tools like Cursor, Cline, and Zed.
-
-**[awesome-mimo-agent](https://github.com/XiaomiMiMo/awesome-mimo-agent)** collects setup guides for using MiMo in those tools — worth a look if you want to try MiMo elsewhere. Contributions welcome: open a PR to add your own setup.
 
 ---
 
 ## Core Features
 
-### Multiple Agents
+### Múltiplos Agentes
 
-| Agent | Description |
+| Agente | Descrição |
 |--------|------|
-| **build** | Default. Full tool permissions for development |
-| **plan** | Read-only analysis mode for code exploration and solution design |
-| **compose** | Orchestration mode for specs-driven development and skill-driven workflows |
+| **build** | Padrão. Permissões completas para desenvolvimento |
+| **plan** | Modo de análise somente leitura para exploração e design de soluções |
+| **compose** | Modo de orquestração para desenvolvimento guiado por specs e workflows por skill |
 
-Press `Tab` to switch between primary agents. Subagents are created by the system as needed.
+Pressione `Tab` para alternar entre os agentes principais. Subagentes são
+criados pelo sistema conforme necessário.
 
-### Persistent Memory
+### Memória Persistente
 
-Cross-session memory powered by SQLite FTS5 full-text search:
+Memória entre sessões com SQLite FTS5 (full-text search):
 
-- **Project memory** (`MEMORY.md`) — persistent project knowledge, rules, and architecture decisions
-- **Session checkpoint** (`checkpoint.md`) — structured state snapshots maintained automatically by the checkpoint-writer subagent
-- **Scratch notes** (`notes.md`) — temporary note area for agents
-- **Task progress** (`tasks/<id>/progress.md`) — per-task logs
+- **Memória de projeto** (`MEMORY.md`) — conhecimento, regras e decisões de arquitetura
+- **Checkpoint de sessão** (`checkpoint.md`) — snapshots estruturados mantidos pelo subagente checkpoint-writer
+- **Notas rápidas** (`notes.md`) — área de rascunho dos agentes
+- **Progresso de tarefa** (`tasks/<id>/progress.md`) — logs por tarefa
 
-Memory is injected automatically when a session resumes, so the agent does not need to relearn project context.
+A memória é injetada automaticamente quando a sessão recomeça, então o agente
+não precisa "aprender de novo" o contexto do projeto.
 
-### Intelligent Context Management
+### Gestão Inteligente de Contexto
 
-- **Automatic checkpoints** — decides when to save session state based on the model context window
-- **Context reconstruction** — when context approaches the limit, rebuilds it from the latest checkpoint, project memory, task progress, and retained recent messages so the agent can continue the current task
-- **Budgeted injection** — uses a token budget to control how much checkpoint, memory, and notes content enters context, with importance ranking
+- **Checkpoints automáticos** — decide quando salvar o estado com base na janela de contexto do modelo
+- **Reconstrução de contexto** — quando o contexto se aproxima do limite, reconstrói a partir do checkpoint mais recente, da memória, do progresso das tarefas e das mensagens recentes
+- **Injeção sob orçamento** — controla com um orçamento de tokens quanto de checkpoint, memória e notas entra no contexto, com ranking de importância
 
-### Task Tracking
+### Rastreamento de Tarefas
 
-A tree-shaped task system (`T1`, `T1.1`, `T1.2`, …) that integrates automatically with the checkpoint system, so task progress is preserved when sessions resume.
+Sistema de tarefas em árvore (`T1`, `T1.1`, `T1.2`, …) que integra
+automaticamente com o sistema de checkpoints, então o progresso das tarefas é
+preservado quando a sessão recomeça.
 
-### Subagent System
+### Sistema de Subagentes
 
-The primary agent can create subagents on demand. Subagents share the current session context and can work in parallel, with lifecycle tracking, cancellation, and background execution.
+O agente principal cria subagentes sob demanda. Subagentes compartilham o
+contexto da sessão atual, trabalham em paralelo, com rastreio de ciclo de
+vida, cancelamento e execução em background.
 
-### Goal / Stop Condition
+### Meta / Condição de Parada
 
-The `/goal` command sets a stopping condition for a session. When the agent tries to stop, an independent judge model evaluates the conversation to decide whether the condition is truly satisfied — preventing premature "optimistic stops" during autonomous work.
+O comando `/goal` define uma condição de parada para a sessão. Quando o agente
+tenta parar, um modelo julgador independente avalia a conversa para decidir se
+a condição foi de fato satisfeita — prevenindo paradas "otimistas" prematuras
+durante trabalho autônomo.
 
-### Compose Mode
+### Modo Compose
 
-Compose mode provides a structured workflow for specs-driven development. It includes built-in skills for planning, execution, code review, TDD, debugging, verification, and merging — orchestrating the full lifecycle from spec to shipped code.
+Modo Compose oferece um workflow estruturado para desenvolvimento guiado por
+specs. Inclui skills embutidas de planejamento, execução, code review, TDD,
+debug, verificação e merge — orquestrando o ciclo completo de spec até código
+entregue.
 
-### Voice Input
+### Entrada de Voz
 
-Real-time streaming voice input powered by TenVAD and MiMo ASR. Activate with `/voice`, then speak — audio is segmented by pauses and transcribed incrementally into the input. Available for MiMo logged-in users. Requires `sox` (`brew install sox` on macOS, other platforms similar).
+Entrada de voz em streaming em tempo real com TenVAD e MiMo ASR. Ative com
+`/voice` e fale — o áudio é segmentado por pausas e transcrito incrementalmente
+na entrada. Disponível para usuários logados no MiMo. Requer `sox`
+(`brew install sox` no macOS, em outras plataformas similar).
 
 <details>
-<summary><strong>WSLg audio setup</strong></summary>
+<summary><strong>Configuração de áudio WSLg</strong></summary>
 
 ```bash
 sudo apt install -y sox pulseaudio libasound2-plugins
@@ -136,95 +179,58 @@ export PULSE_SERVER=unix:/mnt/wslg/PulseServer
 </details>
 
 <details>
-<summary><strong>SSH remote audio (Mac → remote host)</strong></summary>
+<summary><strong>Áudio remoto via SSH (Mac → host remoto)</strong></summary>
 
 ```bash
 # Mac (local)
 brew install pulseaudio
 pulseaudio --load="module-native-protocol-tcp auth-ip-acl=127.0.0.1" --exit-idle-time=-1 --daemonize
-# Add to ~/.ssh/config: RemoteForward 4713 127.0.0.1:4713
+# Adicione em ~/.ssh/config: RemoteForward 4713 127.0.0.1:4713
 
-# Remote host
+# Host remoto
 apt install -y pulseaudio pulseaudio-utils sox
 export PULSE_SERVER=tcp:127.0.0.1:4713
-# Verify: pactl info
+# Verifique: pactl info
 ```
-</details>
-
-<details>
-<summary><strong>Non-MiMo voice providers (OpenRouter, internal API, etc.)</strong></summary>
-
-Voice input can route through other OpenAI-compatible providers via the `voice` config field. The ASR model (`mimo-v2.5-asr`) is only available on MiMo's platform; voice control mode (`mimo-v2.5`) is available on OpenRouter and compatible relay platforms.
-
-**OpenRouter (voice control only):**
-
-Use `/connect` to sign in to OpenRouter, then add to your config:
-```jsonc
-{
-  "voice": {
-    "control_model": "openrouter/xiaomi/mimo-v2.5"
-  }
-}
-```
-
-**Internal / self-hosted relay (both ASR and voice control):**
-```jsonc
-{
-  "provider": {
-    "internal": {
-      "options": {
-        "baseURL": "https://your-api-gateway.example.com/v1",
-        "apiKey": "sk-..."
-      },
-      "models": {
-        "xiaomi/mimo-v2.5-asr": { "name": "MiMo-V2.5-ASR" },
-        "xiaomi/mimo-v2.5": { "name": "MiMo-V2.5" }
-      }
-    }
-  },
-  "voice": {
-    "asr_model": "internal/xiaomi/mimo-v2.5-asr",
-    "control_model": "internal/xiaomi/mimo-v2.5"
-  }
-}
-```
-
-Custom providers must register at least one model in their `models` field to be recognized. The model names in `voice.*_model` are sent directly to the API — they don't need to match the registered model keys exactly.
-
-> **Note:** Models registered under a custom provider will appear in the model selection list. Don't use ASR-only models (e.g. `mimo-v2.5-asr`) as your primary coding model.
-
 </details>
 
 ### Dream & Distill
 
-- **`/dream`** — scans recent session traces, extracts persistent knowledge into project memory, and removes outdated entries
-- **`/distill`** — discovers repeated manual workflows in recent work and packages high-confidence candidates into reusable skills, subagents, or commands
+- **`/dream`** — varra os traços de sessões recentes, extraia conhecimento
+  persistente para a memória do projeto e remova entradas obsoletas
+- **`/distill`** — descobre workflows manuais repetidos no trabalho recente e
+  empacota os candidatos de maior confiança em skills, subagentes ou comandos
+  reutilizáveis
 
 ---
 
-## Configuration
+## Configuração
 
-MiMoCode is configured via `.mimocode/mimocode.json` in the project directory (or `~/.config/mimocode/mimocode.json` globally). Key options include:
+O FlexCode é configurado por `.mimocode/mimocode.json` no diretório do projeto
+(ou `~/.config/mimocode/mimocode.json` globalmente). Opções principais incluem:
 
-- Provider and model selection
-- Agent permissions and custom agents
-- Checkpoint and memory behavior
-- MCP server connections
-- Keybindings and theme
+- Provedor e seleção de modelo
+- Permissões de agente e agentes custom
+- Comportamento de checkpoint e memória
+- Conexões de servidores MCP
+- Keybindings e tema
 
-Max Mode (parallel best-of-N reasoning with judge selection) can be enabled via `experimental.maxMode` in the config.
+O Max Mode (raciocínio paralelo best-of-N com seleção por julgador) pode ser
+ativado via `experimental.maxMode` na configuração.
 
 <details>
-<summary><strong>Allowing the system temp directory (<code>/tmp</code>)</strong></summary>
+<summary><strong>Permitir o diretório temporário do sistema (<code>/tmp</code>)</strong></summary>
 
-By default, reading or writing files outside the project working directory triggers an
-`external_directory` permission prompt — including the system temp directory. This is
-intentional: MiMoCode does not silently widen permissions, so you stay in control of what
-the model can touch outside your project.
+Por padrão, ler ou escrever arquivos fora do diretório de trabalho do projeto
+dispara um prompt de permissão <code>external_directory</code> — incluindo o
+diretório temporário do sistema. Isso é intencional: o FlexCode não amplia
+permissões silenciosamente, você controla o que o modelo pode tocar fora do
+projeto.
 
-The temp directory comes up often because most models reach for it as scratch space (e.g.
-a quick script, a throwaway data file). If you trust your environment and would rather not
-be prompted each time, you can opt in by allowing it in your config:
+O diretório temporário aparece com frequência porque a maioria dos modelos usa
+ele como espaço de rascunho (ex.: um script rápido, um arquivo de dados
+descartável). Se você confia no seu ambiente e prefere não ser perguntado toda
+vez, opte por permitir na configuração:
 
 ```json title=".mimocode/mimocode.json"
 {
@@ -237,49 +243,46 @@ be prompted each time, you can opt in by allowing it in your config:
 }
 ```
 
-**This setting has known risks — use it at your own risk.** The temp directory is
-world-writable and shared with every other process and user on the machine. Auto-allowing
-it means the model can read and write there without confirmation, which widens your exposure
-to predictable temp-path / symlink tricks (e.g. another process pre-creating `/tmp/foo` as a
-symlink to a sensitive file). For that reason it is only recommended for single-user,
-controlled environments or inside a container. Keep the allowlist as narrow as possible.
+**Esta configuração tem riscos conhecidos — use por sua conta e risco.** O
+diretório temporário é gravável por todos e compartilhado com qualquer outro
+processo e usuário da máquina. Permitir automaticamente significa que o modelo
+pode ler e gravar ali sem confirmação, o que amplia sua exposição a truques
+previsíveis de temp-path / symlink (ex.: outro processo pre-cria
+<code>/tmp/foo</code> como symlink para um arquivo sensível). Por isso, é
+recomendado apenas para ambientes de usuário único, controlados, ou dentro de
+um container. Mantenha a allowlist o mais estreita possível.
 
 </details>
 
 ---
 
-## Development
+## Desenvolvimento
 
 ```bash
-bun install              # Install dependencies
-bun run dev              # Run in development mode
-bun turbo typecheck      # Type check
+bun install              # Instala as dependências
+bun run dev              # Roda em modo de desenvolvimento
+bun turbo typecheck      # Checagem de tipos
 ```
 
 ---
 
-## Relationship to OpenCode
+## Relação com o MiMoCode
 
-MiMoCode is built as a fork of [OpenCode](https://github.com/anomalyco/opencode). It keeps all core OpenCode capabilities (multiple providers, TUI, LSP, MCP, plugins) and adds persistent memory, intelligent context management, subagent orchestration, goal-driven autonomous loops, compose workflows, and self-improvement via dream/distill.
-
----
-
-## Community
-
-Scan the QR code to join the community group chat:
-
-<p align="center">
-  <img src="assets/readme/community-qrcode-1.jpg" alt="Community group chat QR code 1" width="240">
-  &nbsp;&nbsp;
-  <img src="assets/readme/community-qrcode-2.jpg" alt="Community group chat QR code 2" width="240">
-</p>
+O FlexCode é um fork do [MiMoCode](https://github.com/XiaomiMiMo/MiMo-Code),
+que por sua vez é um fork do
+[OpenCode](https://github.com/anomalyco/opencode). Ele mantém todas as
+capacidades core do OpenCode/MiMoCode (múltiplos provedores, TUI, LSP, MCP,
+plugins) e adiciona o **navegador integrado** como diferencial — a mesma
+arquitetura de navegação do Hermes Agent.
 
 ---
 
-## License
+## Licença
 
-Source code is licensed under the [MIT License](./LICENSE).
+Código-fonte licenciado sob a [Licença MIT](./LICENSE).
 
-Use of MiMoCode is also subject to the [Use Restrictions](./USE_RESTRICTIONS.md).
-Use of Xiaomi MiMo-hosted services is subject to the [MiMo Terms of Service](https://platform.xiaomimimo.com/docs/terms/user-agreement).
-Use of the MiMo name, logo, and trademarks is subject to the MiMo Trademark Policy.
+O uso do FlexCode também está sujeito às
+[Restrições de Uso](./USE_RESTRICTIONS.md). O uso dos serviços hospedarizados
+pela Xiaomi MiMo está sujeito aos [Termos de Serviço do MiMo](https://platform.xiaomimimo.com/docs/terms/user-agreement).
+O uso do nome, logotipo e marcas do MiMo está sujeito à Política de Marca do
+MiMo.
