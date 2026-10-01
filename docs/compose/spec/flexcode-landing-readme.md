@@ -1,28 +1,31 @@
 ---
 feature: flexcode-landing-readme
-status: in-progress
+status: delivered
 updated: 2026-01-11
 branch: main
-commits:
+commits: 1361854..HEAD
 ---
 
 # FlexCode Landing README
 
 ## Report
 
-**O que foi feito** — Reescrevi o README de landing do fork FlexCode (XiaomiMiMo/MiMo-Code) para exibi-lo na página inicial do GitHub de `alexandregadelha`. O novo `README.md` é em pt-BR e destaca a característica distintiva do fork — o **navegador integrado** (mesma arquitetura de navegação do Hermes Agent) — sobre a base do MiMoCode (agentes, memória persistente, subagentes, compose, dream/distill). Adicionei `README.en.md` (espelho em inglês) e atualizei o `README_npm.md` curto. Ambos os READMEs se referenciam via link no topo.
+**O que foi feito** — Reescrevi o README de landing do fork FlexCode (XiaomiMiMo/MiMo-Code) para exibi-lo na página inicial do GitHub de `alexandregadelha`. O novo `README.md` é em pt-BR e destaca a característica distintiva do fork — o **navegador integrado** (mesma arquitetura de navegação do Hermes Agent) — sobre a base do MiMoCode. Adicionei `README.en.md` (espelho em inglês) e atualizei o `README_npm.md` curto. Os dois READMEs principais se referenciam; o `README.zh.md` do upstream foi preservado e linkado no seletor de idiomas de ambos.
 
 **Verificação** — Evidência fresca (11/01/2026, no workspace `/home/alesef/projetos/FlexCode`):
-- Links externos (5): todos 200 (`anomalyco/opencode`, `NousResearch`, `XiaomiMiMo/MiMo-Code`, `platform.xiaomimimo.com/terms`, `alexandregadelha/FlexCode`).
-- Links locais: `./LICENSE` e `./USE_RESTRICTIONS.md` existem; `assets/readme/mimocode-banner.png` existe.
-- Balanceamento estrutural: `<details>`/`</details>` = 5/5 (PT e EN), 0/0 (npm); code fences paritários (12 em PT, 12 em EN); sem fences órfãos.
-- `bun install` (frozen): resolveu 317 pacotes com sucesso — toolchain usável para quem quiser desenvolver no fork.
-- markdownlint-cli: apenas avisos de estilo (MD013/MD031/MD033/MD060) compatíveis com o estilo do MiMoCode original; nenhum erro de sintaxe.
+- Links externos (5): todos 200.
+- Links locais: `./LICENSE`, `./USE_RESTRICTIONS.md`, `assets/readme/mimocode-banner.png` existem.
+- Estrutura: `<details>`/`</details>` 5/5 (PT e EN), code fences paritários; seletor de idiomas com `README.en.md`, `README.md`, `README.zh.md` presente em ambos.
+- Quick Start: instrução corrigida para `bun install` → `bun run --cwd packages/opencode script/build.ts` → `./packages/opencode/bin/mimo`; alternativa `curl -fsSL https://mimo.xiaomi.com/install | bash` documentada.
+- `bun install --frozen-lockfile`: 317 pacotes resolvidos com sucesso.
+- markdownlint-cli: apenas avisos de estilo compatíveis com o estilo do MiMoCode original; nenhum erro de sintaxe.
 
 **Journey log** —
 1. A branch `main` do fork **não contém** código de navegador — é um mirror do upstream. A seção do README descreve a feature em termos de design/contratos (a ser implementada em branch futura); decisão registrada na [S2].
 2. A "integração de navegador do Hermes" não está versionada no fork; os fontes do Hermes Agent estão em `~/.hermes/hermes-agent-current/tools/browser_*.py` (CDP, Camofox, Lightpanda, cloud providers) — usei-os para descrever a arquitetura com precisão sem copiar código.
 3. `gh auth` está ativo para `alexandregadelha` com token `repo` — push direto para `main` é possível sem credential setup adicional.
+4. A revisão inicial apontou que a Quick Start original (`bun run dev` + `mimo`) era enganosa: o binário é produzido por `script/build.ts`, não instalado por `bun install`. Corrigido em ambos os READMEs e o seletor de idiomas foi estendido para `README.zh.md` (que continuou a existir mas ficou órfão na primeira versão).
+5. "Hospedarizados" (português não-padrão) foi corrigido para "hospedados" em README.md.
 
 ## [S1] Problem
 O fork [FlexCode](https://github.com/alexandregadelha/FlexCode) (XiaomiMiMo/MiMo-Code)

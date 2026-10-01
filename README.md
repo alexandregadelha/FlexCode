@@ -7,7 +7,7 @@
 <p align="center"><strong>FlexCode — Flexibilidade para seus projetos</strong></p>
 
 <p align="center">
-  <a href="README.en.md">English</a> | Português
+  <a href="README.en.md">English</a> | Português | <a href="README.zh.md">中文</a>
 </p>
 
 <p align="center">
@@ -54,15 +54,19 @@ o bug na UI e suba o fix" sem sair do terminal.
 ## Quick Start
 
 ```bash
-# Instalar dependências
+# 1) Instalar dependências
 bun install
 
-# Rodar em modo desenvolvimento
-bun run dev
+# 2) Compilar o binário (produz `packages/opencode/bin/mimo`)
+bun run --cwd packages/opencode script/build.ts
 
-# Ou rodar o bin direto
-mimo
+# 3) Rodar
+./packages/opencode/bin/mimo
 ```
+
+> **Alternativa rápida** — Se preferir não compilar, use o instalador oficial
+> do MiMoCode: `curl -fsSL https://mimo.xiaomi.com/install | bash`. Você pode
+> então layer o módulo de navegador do FlexCode por cima do binário instalado.
 
 No primeiro uso, o fluxo de configuração é guiado automaticamente. As opções
 disponíveis de provedor incluem:
@@ -282,7 +286,7 @@ arquitetura de navegação do Hermes Agent.
 Código-fonte licenciado sob a [Licença MIT](./LICENSE).
 
 O uso do FlexCode também está sujeito às
-[Restrições de Uso](./USE_RESTRICTIONS.md). O uso dos serviços hospedarizados
+[Restrições de Uso](./USE_RESTRICTIONS.md). O uso dos serviços hospedados
 pela Xiaomi MiMo está sujeito aos [Termos de Serviço do MiMo](https://platform.xiaomimimo.com/docs/terms/user-agreement).
 O uso do nome, logotipo e marcas do MiMo está sujeito à Política de Marca do
 MiMo.

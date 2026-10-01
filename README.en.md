@@ -7,12 +7,13 @@
 <p align="center"><strong>FlexCode — Flexibility for your projects</strong></p>
 
 <p align="center">
-  <a href="README.md">Português</a> | English
+  <a href="README.md">Português</a> | English | <a href="README.zh.md">中文</a>
 </p>
 
 <p align="center">
   <a href="https://github.com/alexandregadelha/FlexCode">GitHub</a> |
   A fork of <a href="https://github.com/XiaomiMiMo/MiMo-Code">MiMoCode</a>
+</p>
 </p>
 
 ---
@@ -55,15 +56,19 @@ reproduce the bug in the UI, and ship the fix" without leaving the terminal.
 ## Quick Start
 
 ```bash
-# Install dependencies
+# 1) Install dependencies
 bun install
 
-# Run in development mode
-bun run dev
+# 2) Build the binary (produces `packages/opencode/bin/mimo`)
+bun run --cwd packages/opencode script/build.ts
 
-# Or run the binary directly
-mimo
+# 3) Run
+./packages/opencode/bin/mimo
 ```
+
+> **Quick alternative** — If you prefer not to build, use the official
+> MiMoCode installer: `curl -fsSL https://mimo.xiaomi.com/install | bash`. You
+> can then layer FlexCode's browser module on top of the installed binary.
 
 On first use, the configuration flow is guided automatically. Available
 provider options include:
